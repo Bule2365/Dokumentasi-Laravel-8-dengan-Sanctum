@@ -1,61 +1,161 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# Dokumentasi API Laravel 8 dengan Sanctum
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+## Pendahuluan
+API ini menggunakan Laravel Sanctum untuk autentikasi. Sanctum menyediakan mekanisme autentikasi berbasis token untuk aplikasi SPA (Single Page Application), mobile, atau aplikasi pihak ketiga.
 
-## About Laravel
+### Basis URL
+Semua endpoint di bawah ini mengasumsikan basis URL:
+```
+http://yourdomain.com/api
+```
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Endpoint
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 1. Registrasi Pengguna
+**Endpoint:** `/register`  
+**Metode:** `POST`
 
-## Learning Laravel
+#### Request
+**Header:**
+- `Content-Type: application/json`
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+**Body:**
+```json
+{
+  "name": "string",
+  "email": "string",
+  "password": "string",
+  "password_confirmation": "string"
+}
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+#### Response
+**Sukses (201):**
+```json
+{
+  "user": {
+    "id": 1,
+    "name": "string",
+    "email": "string",
+    "created_at": "datetime",
+    "updated_at": "datetime"
+  },
+  "token": "string"
+}
+```
 
-## Laravel Sponsors
+**Kesalahan (422):**
+```json
+{
+  "message": "Validation errors",
+  "errors": {
+    "field": ["error message"]
+  }
+}
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+---
 
-### Premium Partners
+### 2. Login Pengguna
+**Endpoint:** `/login`  
+**Metode:** `POST`
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[OP.GG](https://op.gg)**
+#### Request
+**Header:**
+- `Content-Type: application/json`
 
-## Contributing
+**Body:**
+```json
+{
+  "email": "string",
+  "password": "string"
+}
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+#### Response
+**Sukses (200):**
+```json
+{
+  "user": {
+    "id": 1,
+    "name": "string",
+    "email": "string",
+    "created_at": "datetime",
+    "updated_at": "datetime"
+  },
+  "token": "string"
+}
+```
 
-## Code of Conduct
+**Kesalahan (401):**
+```json
+{
+  "message": "Invalid credentials"
+}
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+### 3. Logout Pengguna
+**Endpoint:** `/logout`  
+**Metode:** `POST`
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+#### Request
+**Header:**
+- `Authorization: Bearer {token}`
+- `Content-Type: application/json`
 
-## License
+#### Response
+**Sukses (200):**
+```json
+{
+  "message": "Logged out successfully"
+}
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+### 4. Data Pengguna Saat Ini
+**Endpoint:** `/user`  
+**Metode:** `GET`
+
+#### Request
+**Header:**
+- `Authorization: Bearer {token}`
+
+#### Response
+**Sukses (200):**
+```json
+{
+  "id": 1,
+  "name": "string",
+  "email": "string",
+  "created_at": "datetime",
+  "updated_at": "datetime"
+}
+```
+
+**Kesalahan (401):**
+```json
+{
+  "message": "Unauthenticated."
+}
+```
+
+---
+
+## Catatan
+1. Semua endpoint yang membutuhkan autentikasi harus menggunakan header `Authorization` dengan format:
+   ```
+   Authorization: Bearer {token}
+   ```
+2. Token dapat diperoleh dari respon login atau registrasi.
+3. Pastikan aplikasi Anda menggunakan HTTPS untuk keamanan.
+
+---
+
+**Referensi:**
+- [Laravel Sanctum Documentation](https://laravel.com/docs/8.x/sanctum)
+
