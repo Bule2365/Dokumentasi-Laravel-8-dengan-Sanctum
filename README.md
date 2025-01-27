@@ -158,4 +158,5 @@ http://yourdomain.com/api
 
 **Referensi:**
 - [Laravel Sanctum Documentation](https://laravel.com/docs/8.x/sanctum)
+- [Laravel Sanctum Tutorial](https://codelapan.com/post/laravel-8-rest-api-authentication-dengan-sanctum)
 
